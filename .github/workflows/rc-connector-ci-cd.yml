@@ -1,0 +1,45 @@
+name: RC DataMiner CICD Connector
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+.[0-9]+"
+      - "[0-9]+.[0-9]+.[0-9]+.[0-9]+-**"
+
+  workflow_dispatch:
+
+jobs:
+
+  CI:
+    uses: SkylineCommunications/_ReusableWorkflows/.github/workflows/Connector Master Workflow.yml@RC
+    with:
+      referenceName: ${{ github.ref_name }}
+      runNumber: ${{ github.run_number }}
+      referenceType: ${{ github.ref_type }}
+      repository: ${{ github.repository }}
+      owner: ${{ github.repository_owner }}
+      sonarCloudProjectName: SkylineCommunications_BOOST-DailyRegression-Connector-SDK
+    secrets:
+      api-key: ${{ secrets.DATAMINER_DEPLOY_KEY }}
+      sonarCloudToken: ${{ secrets.SONAR_TOKEN }}
+
+  CD-Volatile:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          dotnet tool install -g Skyline.DataMiner.CICD.Tools.Packager --prerelease
+          dotnet tool install -g Skyline.DataMiner.CICD.Tools.CatalogUpload --prerelease
+          dotnet tool install -g Skyline.DataMiner.CICD.Tools.DataMinerDeploy --prerelease
+
+      - name: Create dmprotocol package
+        run: dataminer-package-create dmprotocol ${{ github.workspace }} --name "TEMP" --output ${{ github.workspace }} --version-override "${{ github.ref_name }}"
+    
+      - name: Upload package to Catalog
+        id: upload
+        run: echo "id=$(dataminer-catalog-upload --path-to-artifact "${{ github.workspace }}/TEMP.dmprotocol" --dm-catalog-token "${{ secrets.DATAMINER_DEPLOY_KEY }}")" >> $GITHUB_OUTPUT
+
+      - name: Deploy package from Catalog
+        run: dataminer-package-deploy from-volatile --artifact-id "${{ steps.upload.outputs.id }}" --dm-system-token "${{ secrets.DATAMINER_DEPLOY_KEY }}"

@@ -1,0 +1,12 @@
+name: RC Regression
+
+on:
+  workflow_dispatch: # Run manually
+
+jobs:
+  regression:
+    uses: SkylineCommunications/BOOST-DailyRegression/.github/workflows/regression.yml@main
+    with:
+      workflow-name: rc-connector-ci-cd.yml
+    secrets:
+      msteams-webhook: ${{ secrets.TEAMS_WEBHOOK }}
