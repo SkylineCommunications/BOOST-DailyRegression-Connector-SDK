@@ -22,6 +22,19 @@ jobs:
     secrets:
       api-key: ${{ secrets.DATAMINER_TOKEN }}
       sonarCloudToken: ${{ secrets.SONAR_TOKEN }}
+      
+  CD-FromCatalog:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    needs: CI
+    steps:
+      - uses: actions/checkout@v4
+        
+      - name: Install .NET Tools
+        run: dotnet tool install -g Skyline.DataMiner.CICD.Tools.DataMinerDeploy --prerelease
+
+      - name: Deploy to DataMiner
+        run: dataminer-package-deploy from-catalog --catalog-id "07771177-0796-490b-a820-05c6f93fa8f2" --catalog-version "${{ github.ref_name }}" --dm-catalog-token ${{ secrets.DATAMINER_TOKEN }} --agent-destination-id ${{ secrets.AGENT_DESTINATION_ID }}
 
   CD-Volatile:
     if: github.ref_type == 'tag'
