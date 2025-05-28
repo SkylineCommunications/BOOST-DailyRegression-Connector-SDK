@@ -1,4 +1,4 @@
-name: RC DataMiner CICD Connector
+name: RC DataMiner CICD Connector OIDC
 
 on:
   push:
@@ -13,15 +13,7 @@ jobs:
   CI:
     uses: SkylineCommunications/_ReusableWorkflows/.github/workflows/Connector Master Workflow.yml@RC
     with:
-      referenceName: ${{ github.ref_name }}
-      runNumber: ${{ github.run_number }}
-      referenceType: ${{ github.ref_type }}
-      repository: ${{ github.repository }}
-      owner: ${{ github.repository_owner }}
       sonarCloudProjectName: SkylineCommunications_BOOST-DailyRegression-Connector-SDK
-    secrets:
-      api-key: ${{ secrets.DATAMINER_TOKEN }}
-      sonarCloudToken: ${{ secrets.SONAR_TOKEN }}
       
   CD-FromCatalog:
     if: github.ref_type == 'tag'
