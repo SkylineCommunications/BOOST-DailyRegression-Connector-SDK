@@ -1,0 +1,50 @@
+name: OIDC DataMiner CICD Connector
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+.[0-9]+"
+      - "[0-9]+.[0-9]+.[0-9]+.[0-9]+-**"
+
+  workflow_dispatch:
+
+jobs:
+
+  CI:
+    uses: SkylineCommunications/_ReusableWorkflows/.github/workflows/Connector Master Workflow.yml@main
+    with:
+      sonarCloudProjectName: SkylineCommunications_BOOST-DailyRegression-Connector-SDK
+  
+  CD-FromCatalog:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    needs: CI
+    steps:
+      - uses: actions/checkout@v4
+        
+      - name: Install .NET Tools
+        run: dotnet tool install -g Skyline.DataMiner.CICD.Tools.DataMinerDeploy
+
+      - name: Deploy to DataMiner
+        run: dataminer-package-deploy from-catalog --catalog-id "798dc792-3c5c-4de9-a72a-d4bb74067a31" --catalog-version "${{ github.ref_name }}" --dm-catalog-token ${{ secrets.DATAMINER_TOKEN }} --agent-destination-id ${{ secrets.AGENT_DESTINATION_ID }}
+
+  CD-Volatile:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          dotnet tool install -g Skyline.DataMiner.CICD.Tools.Packager
+          dotnet tool install -g Skyline.DataMiner.CICD.Tools.CatalogUpload
+          dotnet tool install -g Skyline.DataMiner.CICD.Tools.DataMinerDeploy
+
+      - name: Create dmprotocol package
+        run: dataminer-package-create dmprotocol ${{ github.workspace }} --name "TEMP" --output ${{ github.workspace }} --version-override "${{ github.ref_name }}"
+    
+      - name: Upload package to Catalog
+        id: upload
+        run: echo "id=$(dataminer-catalog-upload --path-to-artifact "${{ github.workspace }}/TEMP.dmprotocol" --dm-catalog-token "${{ secrets.DATAMINER_DEPLOY_KEY }}")" >> $GITHUB_OUTPUT
+
+      - name: Deploy package from Catalog
+        run: dataminer-package-deploy from-volatile --artifact-id "${{ steps.upload.outputs.id }}" --dm-system-token "${{ secrets.DATAMINER_DEPLOY_KEY }}"
