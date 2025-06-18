@@ -15,6 +15,7 @@ jobs:
     secrets:
       msteams-webhook: ${{ secrets.TEAMS_WEBHOOK }}
   regression-oidc:
+    needs: regression
     uses: SkylineCommunications/BOOST-DailyRegression/.github/workflows/regression.yml@main
     with:
       workflow-name: connector-ci-cd-oidc.yml
