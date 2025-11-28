@@ -2,7 +2,7 @@
 <Protocol xmlns="http://www.skyline.be/protocol">
 	<Name>BOOST-DailyRegression-Connector-SDK</Name>
 	<Description>BOOST-DailyRegression-Connector-SDK DataMiner connector</Description>
-	<Version>1.0.0.1</Version>
+	<Version>1.0.0.2</Version>
 	<IntegrationID>DMS-DRV-</IntegrationID>
 	<Provider>Skyline Communications</Provider>
 	<Vendor>Skyline</Vendor>
@@ -20,8 +20,8 @@
 
 	<Params>
 		<Param id="1" trending="false">
-			<Name>MyStringParam</Name>
-			<Description>My String Param</Description>
+			<Name>MyStringParamMajorChange</Name>
+			<Description>My String Param Major Change</Description>
 			<Type>read</Type>
 			<Information>
 				<Subtext>My String Param</Subtext>
@@ -137,6 +137,16 @@
 										</Provider>
 										<Changes>
 											<NewFeature>Initial version</NewFeature>
+										</Changes>
+									</MinorVersion>
+									<MinorVersion id="2">
+										<Date>2025-11-28</Date>
+										<Provider>
+											<Author></Author>
+											<Company>Skyline Communications</Company>
+										</Provider>
+										<Changes>
+											<NewFeature>Breaking Things</NewFeature>
 										</Changes>
 									</MinorVersion>
 								</MinorVersions>
