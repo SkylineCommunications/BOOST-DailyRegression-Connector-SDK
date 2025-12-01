@@ -10,9 +10,9 @@ public static class Parameter
 {
 	/// <summary>PID: 1 | Type: read</summary>
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public const int mystringparam_1 = 1;
+	public const int mystringparambreakingchange_1 = 1;
 	/// <summary>PID: 1 | Type: read</summary>
-	public const int mystringparam = 1;
+	public const int mystringparambreakingchange = 1;
 	public class Write
 	{
 	}
@@ -27,8 +27,8 @@ public class WriteParameters
 }
 public interface SLProtocolExt : SLProtocol
 {
-	object Mystringparam_1 { get; set; }
-	object Mystringparam { get; set; }
+	object Mystringparambreakingchange_1 { get; set; }
+	object Mystringparambreakingchange { get; set; }
 	object Afterstartup_dummy { get; set; }
 	WriteParameters Write { get; set; }
 }
@@ -36,9 +36,9 @@ public class ConcreteSLProtocolExt : ConcreteSLProtocol, SLProtocolExt
 {
 	/// <summary>PID: 1  | Type: read</summary>
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public System.Object Mystringparam_1 {get { return GetParameter(1); }set { SetParameter(1, value); }}
+	public System.Object Mystringparambreakingchange_1 {get { return GetParameter(1); }set { SetParameter(1, value); }}
 	/// <summary>PID: 1  | Type: read</summary>
-	public System.Object Mystringparam {get { return GetParameter(1); }set { SetParameter(1, value); }}
+	public System.Object Mystringparambreakingchange {get { return GetParameter(1); }set { SetParameter(1, value); }}
 	/// <summary>PID: 2  | Type: dummy</summary>
 	public System.Object Afterstartup_dummy {get { return GetParameter(2); }set { SetParameter(2, value); }}
 	public WriteParameters Write { get; set; }
