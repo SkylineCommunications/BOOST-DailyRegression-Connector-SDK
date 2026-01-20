@@ -1,14 +1,26 @@
 namespace Skyline.Protocol
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Text;
+    using SLNetMessages = Skyline.DataMiner.Net.Messages;
 
     namespace MyExtension
-    {
-        public class MyClass
-        {
-        }
-    }
+	{
+		using Skyline.DataMiner.Scripting;
+
+		public class MyClass
+		{
+			public MyClass(SLProtocol protocol)
+			{
+				var idx = new uint[]
+				{
+					Parameter.Mytable.Idx.mytable_instance,
+					Parameter.Mytable.Idx.mytable_stringcolumn,
+				};
+
+				var columns = (object[])protocol.NotifyProtocol(
+					(int)SLNetMessages.NotifyType.NT_GET_TABLE_COLUMNS,
+					Parameter.Mytable.tablePid,
+					idx);
+			}
+		}
+	}
 }

@@ -16,6 +16,44 @@ public static class Parameter
 	public class Write
 	{
 	}
+	public class Mytable
+	{
+		/// <summary>PID: 1000</summary>
+		public const int tablePid = 1000;
+		/// <summary>IDX: 0</summary>
+		public const int indexColumn = 0;
+		/// <summary>PID: 1001</summary>
+		public const int indexColumnPid = 1001;
+		public class Pid
+		{
+			/// <summary>PID: 1001 | Type: read</summary>
+			[EditorBrowsable(EditorBrowsableState.Never)]
+			public const int mytable_instance_1001 = 1001;
+			/// <summary>PID: 1001 | Type: read</summary>
+			public const int mytable_instance = 1001;
+			/// <summary>PID: 1002 | Type: read</summary>
+			[EditorBrowsable(EditorBrowsableState.Never)]
+			public const int mytable_stringcolumn_1002 = 1002;
+			/// <summary>PID: 1002 | Type: read</summary>
+			public const int mytable_stringcolumn = 1002;
+			public class Write
+			{
+			}
+		}
+		public class Idx
+		{
+			/// <summary>IDX: 0 | Type: read</summary>
+			[EditorBrowsable(EditorBrowsableState.Never)]
+			public const int mytable_instance_1001 = 0;
+			/// <summary>IDX: 0 | Type: read</summary>
+			public const int mytable_instance = 0;
+			/// <summary>IDX: 1 | Type: read</summary>
+			[EditorBrowsable(EditorBrowsableState.Never)]
+			public const int mytable_stringcolumn_1002 = 1;
+			/// <summary>IDX: 1 | Type: read</summary>
+			public const int mytable_stringcolumn = 1;
+		}
+	}
 }
 public class WriteParameters
 {
@@ -27,13 +65,21 @@ public class WriteParameters
 }
 public interface SLProtocolExt : SLProtocol
 {
+	/// <summary>PID: 1000</summary>
+	MytableQActionTable mytable { get; set; }
 	object Mystringparambreakingchange_1 { get; set; }
 	object Mystringparambreakingchange { get; set; }
 	object Afterstartup_dummy { get; set; }
+	object Mytable_instance_1001 { get; set; }
+	object Mytable_instance { get; set; }
+	object Mytable_stringcolumn_1002 { get; set; }
+	object Mytable_stringcolumn { get; set; }
 	WriteParameters Write { get; set; }
 }
 public class ConcreteSLProtocolExt : ConcreteSLProtocol, SLProtocolExt
 {
+	/// <summary>PID: 1000</summary>
+	public MytableQActionTable mytable { get; set; }
 	/// <summary>PID: 1  | Type: read</summary>
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public System.Object Mystringparambreakingchange_1 {get { return GetParameter(1); }set { SetParameter(1, value); }}
@@ -41,10 +87,46 @@ public class ConcreteSLProtocolExt : ConcreteSLProtocol, SLProtocolExt
 	public System.Object Mystringparambreakingchange {get { return GetParameter(1); }set { SetParameter(1, value); }}
 	/// <summary>PID: 2  | Type: dummy</summary>
 	public System.Object Afterstartup_dummy {get { return GetParameter(2); }set { SetParameter(2, value); }}
+	/// <summary>PID: 1001  | Type: read</summary>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public System.Object Mytable_instance_1001 {get { return GetParameter(1001); }set { SetParameter(1001, value); }}
+	/// <summary>PID: 1001  | Type: read</summary>
+	public System.Object Mytable_instance {get { return GetParameter(1001); }set { SetParameter(1001, value); }}
+	/// <summary>PID: 1002  | Type: read</summary>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public System.Object Mytable_stringcolumn_1002 {get { return GetParameter(1002); }set { SetParameter(1002, value); }}
+	/// <summary>PID: 1002  | Type: read</summary>
+	public System.Object Mytable_stringcolumn {get { return GetParameter(1002); }set { SetParameter(1002, value); }}
 	public WriteParameters Write { get; set; }
 	public ConcreteSLProtocolExt()
 	{
+		mytable = new MytableQActionTable(this, 1000, "mytable");
 		Write = new WriteParameters(this);
 	}
+}
+/// <summary>IDX: 0</summary>
+public class MytableQActionTable : QActionTable, IEnumerable<MytableQActionRow>
+{
+	public MytableQActionTable(SLProtocol protocol, int tableId, string tableName) : base(protocol, tableId, tableName) { }
+	IEnumerator IEnumerable.GetEnumerator() { return (IEnumerator) GetEnumerator(); }
+	public IEnumerator<MytableQActionRow> GetEnumerator() { return new QActionTableEnumerator<MytableQActionRow>(this); }
+}
+/// <summary>IDX: 0</summary>
+public class MytableQActionRow : QActionTableRow
+{
+	/// <summary>PID: 1001 | Type: read</summary>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public System.Object Mytable_instance_1001 { get { if (base.Columns.ContainsKey(0)) { return base.Columns[0]; } else { return null; } } set { if (base.Columns.ContainsKey(0)) { base.Columns[0] = value; } else { base.Columns.Add(0, value); } } }
+	/// <summary>PID: 1001 | Type: read</summary>
+	public System.Object Mytable_instance { get { if (base.Columns.ContainsKey(0)) { return base.Columns[0]; } else { return null; } } set { if (base.Columns.ContainsKey(0)) { base.Columns[0] = value; } else { base.Columns.Add(0, value); } } }
+	/// <summary>PID: 1002 | Type: read</summary>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public System.Object Mytable_stringcolumn_1002 { get { if (base.Columns.ContainsKey(1)) { return base.Columns[1]; } else { return null; } } set { if (base.Columns.ContainsKey(1)) { base.Columns[1] = value; } else { base.Columns.Add(1, value); } } }
+	/// <summary>PID: 1002 | Type: read</summary>
+	public System.Object Mytable_stringcolumn { get { if (base.Columns.ContainsKey(1)) { return base.Columns[1]; } else { return null; } } set { if (base.Columns.ContainsKey(1)) { base.Columns[1] = value; } else { base.Columns.Add(1, value); } } }
+	public MytableQActionRow() : base(0, 2) { }
+	public MytableQActionRow(System.Object[] oRow) : base(0, 2, oRow) { }
+	public static implicit operator MytableQActionRow(System.Object[] source) { return new MytableQActionRow(source); }
+	public static implicit operator System.Object[](MytableQActionRow source) { return source.ToObjectArray(); }
 }
 }
